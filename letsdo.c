@@ -3,17 +3,21 @@
 #include <string.h>
 #include <windows.h>
 #include <time.h>
-#define no_of_vaccine 200
-int password();
+#define no_of_vaccine 100
 void menu();
 void newRecord();
 void vaccineDate();
 void search();
 void viewAvailable();
+void firstDose();
+void secondDose();
+int lwr = 11111, upr = 99999, no_of_patients = 0;
+int password();
+
 struct record
 {
     char name[30], gender, profession[20], address[20], conf;
-    int age, bp;
+    int age, bp, random;
     float temperature;
     unsigned long long phone;
 };
@@ -74,11 +78,11 @@ int password()
     }
     pass[i] = '\0';
     srand(time(0));
-    cap = rand();
+    cap = (rand() % (upr - lwr + 1)) + lwr;
     printf("\n\n\t\t\t\t AUTO GENERATED NUMBER:->  %d", cap);
     printf("\n\n\n\n\t\tPlease enter the valid auto_generated number :-   ");
     scanf("%d", &capt);
-    if ((strcmp(cname, "a") == 0) && (strcmp(pass, "a") == 0) && cap == capt)
+    if ((strcmp(cname, "admin") == 0) && (strcmp(pass, "admin") == 0) && cap == capt)
     {
         return 1;
     }
@@ -140,6 +144,61 @@ run:
 
 void newRecord()
 {
+    if (no_of_vaccine > no_of_patients)
+    {
+
+    run2:
+        system("cls");
+        printf("\n\t\t\t\t\t\t\t*****************************************\n");
+        printf("\t\t\t\t\t\t\t\t  RECORD INSERTING ZONE");
+        printf("\n\t\t\t\t\t\t\t*****************************************\n\n");
+        printf("\n\n\n\t\t\t\t\t\t1: First Dose\t\t\t 2: Second Dose");
+        printf("\n\n\n\n\t\t\t\t\t\t3: Back");
+        int n2;
+        printf("\n\n\n\n\t\t\t\t\t\t\t\tChoice:- ");
+        scanf("%d", &n2);
+        switch (n2)
+        {
+        case 1:
+        {
+            firstDose();
+            break;
+        }
+        case 2:
+        {
+            secondDose();
+            break;
+        }
+        case 3:
+        {
+            menu();
+            break;
+        }
+        default:
+        {
+            printf("\n\t\tWrong choice \n");
+            char chy;
+            printf("\n\t\tWanna stay in this page(y/n)?:- ");
+            scanf(" %c", &chy);
+            if (chy == 'y' || chy == 'Y')
+            {
+                goto run2;
+            }
+            else
+            {
+                exit(0);
+            }
+        }
+        }
+    }
+    else
+    {
+        printf("\n\n\n\t\t\t\t(Sorry! Vaccine is finished. We will let you know after the vaccine will arrive)\n\n\n\n\n\n");
+    }
+}
+
+void firstDose()
+{
     system("cls");
     FILE *fp;
     fp = fopen("record.txt", "a");
@@ -153,7 +212,7 @@ void newRecord()
         system("cls");
         struct record rec;
         printf("\n\t\t\t\t\t\t\t*****************************************\n");
-        printf("\t\t\t\t\t\t\t\t  RECORD INSERTING ZONE");
+        printf("\t\t\t\t\t\t\t\t  FIRST DOSE VACCINE");
         printf("\n\t\t\t\t\t\t\t*****************************************\n\n");
         fflush(stdin);
         printf("\n\t\t Enter your name :-  ");
@@ -180,24 +239,68 @@ void newRecord()
         printf("\n\t\t Enter your Mobile number:- ");
         scanf("%llu", &rec.phone);
         fflush(stdin);
+        rec.random = (rand() % (upr - lwr + 1)) + lwr;
+        printf("\n\n\n\t\t\t\t\t\t\t Your unique number:- %d", rec.random);
+        printf("\n\t\t\t\t\t (YOU HAVE TO REMEMBER YOUR UNIQUE NUMBER FOR SECOND DOSE)");
+        fflush(stdin);
     take1:
         fflush(stdin);
-        printf("\n\n\n\n\t\t\t\t Hit dot(.) for conformation:- ");
+        printf("\n\n\n\n\t\t\t\t\t\t\t Hit dot(.) for conformation:- ");
         scanf("%c", &rec.conf);
         if (rec.conf != '.')
         {
-            printf("\n\n\n\n\t\t\t\t (Please enter vallid character)\n");
+            printf("\n\n\t\t\t\t\t\t\t (Please enter vallid character)\n");
             goto take1;
         }
         fflush(stdin);
         fwrite(&rec, sizeof(rec), 1, fp);
         fclose(fp);
         system("cls");
-        printf("\n\n\n\n\n\n\n\t\t\t\t\tYour data is successfully recorded. That means, you are now vaccinated. \n\n\t\t\t\t\t\t\t\t STAY HOME STAY SAFE \n\n\n\n\n\n\n\n");
+        printf("\n\n\n\n\n\n\n\t\t\t\t\t\t\t\t\tYour first dose is done. \n\n\t\t\t\t\t\t\t\t (PLEASE COME AFTER 30 DAYS FOR SECOND DOSE) \n\n\n\n\n\n\n\n");
         printf("\t\n\n\t\t\t\t\n\n\n\n\n\n\n\n\n\n\n\n Press any key to return HOMEPAGE.............  ");
         getch();
         menu();
     }
+}
+
+void secondDose()
+{
+    time_t tim;
+    time(&tim);
+    FILE *fp;
+    fp = fopen("record.txt", "r");
+    if (fp == NULL)
+    {
+        printf("\n\t\tError opening file");
+        exit(1);
+    }
+    struct record rec;
+    int no_tally, count = 0;
+    system("cls");
+    printf("\n\t\t\t\t\t\t\t*****************************************\n");
+    printf("\t\t\t\t\t\t\t\t  SECOND DOSE VACCINE");
+    printf("\n\t\t\t\t\t\t\t*****************************************\n\n");
+    printf("\n\n\n\t\t\t\t\t\t\tEnter your unique number:- ");
+    scanf("%d", &no_tally);
+    while (fread(&rec, sizeof(rec), 1, fp) == 1)
+    {
+        if (no_tally == rec.random)
+        {
+            count = 1;
+            system("cls");
+            printf("\n\n\n\t\t\t\t\tHello! %s", rec.name);
+            printf("\n\n\n\n\t\t\t\t\t\t\tCONGRATULATION! You have taken both dose of vaccine.\n\n\t\t\t\t\t\t\t\t\t STAY HOME STAY SAFE\n");
+            printf("\n\n\n\n\n\t\t\t\t\t\t\t\tDate:- %s", ctime(&tim));
+        }
+    }
+    if (!count)
+    {
+        printf("\n\n\n\t\t\t(Either your have entered mistake UNIQUE number or You have to take your first dose in order to take second dose)");
+    }
+    fclose(fp);
+    printf("\t\n\n\t\t\t\t\n\n\n\n\n\n\n\n\n\n\n\n Press any key to return HOMEPAGE.............  ");
+    getch();
+    menu();
 }
 
 void search()
@@ -236,8 +339,7 @@ void search()
             printf("\n\t\t\t\t\t\t\tBlood Pressure=>   %d\n", rec.bp);
             printf("\n\t\t\t\t\t\t\tBody Temperature=>   %.3f\n", rec.temperature);
             printf("\n\t\t\t\t\t\t\tPermanent Address=>   %s\n", rec.address);
-            printf("\n\t\t\t\t\t\t\tPhone Number=>   %llu", rec.phone);
-            printf("\n\n\n\n\n\n\n\n\n");
+            printf("\n\t\t\t\t\t\t\tPhone Number=>   %llu\n\n\n\n", rec.phone);
         }
     }
     if (!counter)
@@ -292,7 +394,7 @@ void viewAvailable()
 {
     FILE *fp;
     char ch;
-    int add_no_of_vaccine = 0, rem_vaccine = 0, no_of_patients = 0;
+    int add_no_of_vaccine = 0, rem_vaccine = 0;
     fp = fopen("record.txt", "r");
     if (fp == NULL)
     {
