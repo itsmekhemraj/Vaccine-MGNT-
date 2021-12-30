@@ -256,7 +256,7 @@ void firstDose()
         fwrite(&rec, sizeof(rec), 1, fp);
         fclose(fp);
         system("cls");
-        printf("\n\n\n\n\n\n\n\t\t\t\t\t\t\t\t\tYour first dose is done. \n\n\t\t\t\t\t\t\t\t (PLEASE COME AFTER 30 DAYS FOR SECOND DOSE) \n\n\n\n\n\n\n\n");
+        printf("\n\n\n\n\n\n\n\t\t\t\t\t\t\t\t\t%s! Your first dose is done. \n\n\t\t\t\t\t\t\t\t (PLEASE COME AFTER 30 DAYS FOR SECOND DOSE) \n\n\n\n\n\n\n\n", rec.name);
         printf("\t\n\n\t\t\t\t\n\n\n\n\n\n\n\n\n\n\n\n Press any key to return HOMEPAGE.............  ");
         getch();
         menu();
@@ -418,7 +418,4 @@ void viewAvailable()
     printf("\n\n\n\n\t\t\t\t\t\tNumber of people vaccinated from this hospital:- %d", no_of_patients);
     printf("\n\n\t\t\t\t\t\tAvailable number of vaccine are:- %d \n", rem_vaccine);
     fclose(fp);
-    printf("\t\n\n\t\t\t\t\n\n\n\n\n\n\n\n\n\n\n\n Press any key to return HOMEPAGE.............  ");
-    getch();
-    menu();
 }
