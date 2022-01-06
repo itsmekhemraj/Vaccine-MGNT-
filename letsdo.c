@@ -6,9 +6,11 @@
 #define no_of_vaccine 100
 void menu();
 void newRecord();
+void holdon();
 void vaccineDate();
 void search();
-void viewAvailable();
+void availableFirst();
+void availableSecond();
 void firstDose();
 void secondDose();
 int lwr = 11111, upr = 99999, no_of_patients = 0;
@@ -16,9 +18,8 @@ int password();
 
 struct record
 {
-    char name[30], gender, profession[20], address[20], conf;
-    int age, bp, random;
-    float temperature;
+    char name[30], gender, profession[20], address[20], conf, cont;
+    int age, bp, random, temperature;
     unsigned long long phone;
 };
 
@@ -127,12 +128,55 @@ run:
     default:
     {
         printf("\n\t\tWrong choice \n");
-        char ch;
+        char ch1;
         printf("\n\t\tWanna stay in this page(y/n)?:- ");
-        scanf(" %c", &ch);
-        if (ch == 'y' || ch == 'Y')
+        scanf(" %c", &ch1);
+        if (ch1 == 'y' || ch1 == 'Y')
         {
             goto run;
+        }
+    }
+    }
+}
+
+void newRecord()
+{
+run2:
+    system("cls");
+    printf("\n\t\t\t\t\t\t\t*****************************************\n");
+    printf("\t\t\t\t\t\t\t\t  RECORD INSERTING ZONE");
+    printf("\n\t\t\t\t\t\t\t*****************************************\n\n");
+    printf("\n\n\n\t\t\t\t\t\t1: First Dose\t\t\t 2: Second Dose");
+    printf("\n\n\n\n\t\t\t\t\t\t3: Back");
+    int n2;
+    printf("\n\n\n\n\t\t\t\t\t\t\t\tChoice:- ");
+    scanf("%d", &n2);
+    switch (n2)
+    {
+    case 1:
+    {
+        firstDose();
+        break;
+    }
+    case 2:
+    {
+        secondDose();
+        break;
+    }
+    case 3:
+    {
+        menu();
+        break;
+    }
+    default:
+    {
+        printf("\n\t\tWrong choice \n");
+        char chy;
+        printf("\n\t\tWanna stay in this page(y/n)?:- ");
+        scanf(" %c", &chy);
+        if (chy == 'y' || chy == 'Y')
+        {
+            goto run2;
         }
         else
         {
@@ -142,62 +186,32 @@ run:
     }
 }
 
-void newRecord()
+void firstDose()
 {
-    if (no_of_vaccine > no_of_patients)
+    FILE *fpt;
+    fpt = fopen("hold.txt", "r");
+    if (fpt == NULL)
     {
-
-    run2:
-        system("cls");
-        printf("\n\t\t\t\t\t\t\t*****************************************\n");
-        printf("\t\t\t\t\t\t\t\t  RECORD INSERTING ZONE");
-        printf("\n\t\t\t\t\t\t\t*****************************************\n\n");
-        printf("\n\n\n\t\t\t\t\t\t1: First Dose\t\t\t 2: Second Dose");
-        printf("\n\n\n\n\t\t\t\t\t\t3: Back");
-        int n2;
-        printf("\n\n\n\n\t\t\t\t\t\t\t\tChoice:- ");
-        scanf("%d", &n2);
-        switch (n2)
-        {
-        case 1:
-        {
-            firstDose();
-            break;
-        }
-        case 2:
-        {
-            secondDose();
-            break;
-        }
-        case 3:
-        {
-            menu();
-            break;
-        }
-        default:
-        {
-            printf("\n\t\tWrong choice \n");
-            char chy;
-            printf("\n\t\tWanna stay in this page(y/n)?:- ");
-            scanf(" %c", &chy);
-            if (chy == 'y' || chy == 'Y')
-            {
-                goto run2;
-            }
-            else
-            {
-                exit(0);
-            }
-        }
-        }
+        holdon();
     }
     else
     {
-        printf("\n\n\n\t\t\t\t(Sorry! Vaccine is finished. We will let you know after the vaccine will arrive)\n\n\n\n\n\n");
+        fscanf(fpt, "%d", &no_of_patients);
+        if (no_of_vaccine > no_of_patients)
+        {
+            holdon();
+        }
+        else
+        {
+            system("cls");
+            printf("\n\n\n\n\n\n\n\n\n\t\t\t\t(Sorry! Vaccine is finished. We will let you know after the vaccine will arrived.)\n\n\n");
+            exit(0);
+        }
     }
+    fclose(fpt);
 }
 
-void firstDose()
+void holdon()
 {
     system("cls");
     FILE *fp;
@@ -231,7 +245,7 @@ void firstDose()
         scanf("%d", &rec.bp);
         fflush(stdin);
         printf("\n\t\t Enter your Body temperature (Fahrenheit):-  ");
-        scanf("%f", &rec.temperature);
+        scanf("%d", &rec.temperature);
         fflush(stdin);
         printf("\n\t\t Enter your permanent address :-  ");
         gets(rec.address);
@@ -239,22 +253,43 @@ void firstDose()
         printf("\n\t\t Enter your Mobile number:- ");
         scanf("%llu", &rec.phone);
         fflush(stdin);
+        srand(time(0));
         rec.random = (rand() % (upr - lwr + 1)) + lwr;
         printf("\n\n\n\t\t\t\t\t\t\t Your unique number:- %d", rec.random);
         printf("\n\t\t\t\t\t (YOU HAVE TO REMEMBER YOUR UNIQUE NUMBER FOR SECOND DOSE)");
         fflush(stdin);
-    take1:
-        fflush(stdin);
-        printf("\n\n\n\n\t\t\t\t\t\t\t Hit dot(.) for conformation:- ");
-        scanf("%c", &rec.conf);
-        if (rec.conf != '.')
-        {
-            printf("\n\n\t\t\t\t\t\t\t (Please enter vallid character)\n");
-            goto take1;
-        }
-        fflush(stdin);
+        rec.conf = '.';
         fwrite(&rec, sizeof(rec), 1, fp);
         fclose(fp);
+
+        FILE *fp;
+        char chu;
+        no_of_patients=0;
+        fp = fopen("record.txt", "r");
+        if (fp == NULL)
+        {
+            printf("\n\t\tError opening the file");
+            exit(0);
+        }
+        chu = fgetc(fp);
+        while (!feof(fp))
+        {
+            chu = fgetc(fp);
+            if (chu == '.')
+            {
+                
+                no_of_patients++;
+            }
+        }
+        fclose(fp);
+
+        FILE *fpt;
+        fpt = fopen("hold.txt", "w");
+        fprintf(fpt, "%d", no_of_patients);
+        fclose(fpt);
+
+        printf("\t\n\n\t\t\t\t\n\n\n\n\n\n\n\n\n\n\n\n Press any key to continue...  ");
+        getch();
         system("cls");
         printf("\n\n\n\n\n\n\n\t\t\t\t\t\t\t\t\t%s! Your first dose is done. \n\n\t\t\t\t\t\t\t\t (PLEASE COME AFTER 30 DAYS FOR SECOND DOSE) \n\n\n\n\n\n\n\n", rec.name);
         printf("\t\n\n\t\t\t\t\n\n\n\n\n\n\n\n\n\n\n\n Press any key to return HOMEPAGE.............  ");
@@ -265,6 +300,7 @@ void firstDose()
 
 void secondDose()
 {
+    int chkt = 0;
     time_t tim;
     time(&tim);
     FILE *fp;
@@ -286,6 +322,8 @@ void secondDose()
     {
         if (no_tally == rec.random)
         {
+
+            chkt++;
             count = 1;
             system("cls");
             printf("\n\n\n\t\t\t\t\tHello! %s", rec.name);
@@ -298,6 +336,17 @@ void secondDose()
         printf("\n\n\n\t\t\t(Either your have entered mistake UNIQUE number or You have to take your first dose in order to take second dose)");
     }
     fclose(fp);
+
+    if (chkt != 0)
+    {
+        struct record rec;
+        FILE *fp;
+        fp = fopen("record.txt", "a");
+        rec.cont = '+';
+        fwrite(&rec, sizeof(rec), 1, fp);
+        fclose(fp);
+    }
+    
     printf("\t\n\n\t\t\t\t\n\n\n\n\n\n\n\n\n\n\n\n Press any key to return HOMEPAGE.............  ");
     getch();
     menu();
@@ -337,14 +386,14 @@ void search()
             printf("\n\t\t\t\t\t\t\tAge=>   %d\n", rec.age);
             printf("\n\t\t\t\t\t\t\tProfession=>   %s\n", rec.profession);
             printf("\n\t\t\t\t\t\t\tBlood Pressure=>   %d\n", rec.bp);
-            printf("\n\t\t\t\t\t\t\tBody Temperature=>   %.3f\n", rec.temperature);
+            printf("\n\t\t\t\t\t\t\tBody Temperature=>   %d\n", rec.temperature);
             printf("\n\t\t\t\t\t\t\tPermanent Address=>   %s\n", rec.address);
-            printf("\n\t\t\t\t\t\t\tPhone Number=>   %llu\n\n\n\n", rec.phone);
+            printf("\n\t\t\t\t\t\t\tPhone Number=>   %llu\n", rec.phone);
         }
     }
     if (!counter)
     {
-        printf("\n\n\n\t\t\t\t\t\tThis person is not vaccoinated from this hospital.");
+        printf("\n\n\n\t\t\t\t\t\t(This person is not vaccoinated from this hospital)");
     }
     fclose(fp);
     printf("\t\n\n\t\t\t\t\n\n\n\n\n\n\n\n\n\n\n\n Press any key to return HOMEPAGE.............  ");
@@ -360,18 +409,23 @@ run:
     printf("\n\t\t\t\t\t\t\t*****************************************\n");
     printf("\t\t\t\t\t\t\t\t  VACCINE STATISTICS");
     printf("\n\t\t\t\t\t\t\t*****************************************\n\n");
-    printf("\n\n\n\t\t\t\t\t\t1: View Available ");
-    printf("\n\n\n\n\t\t\t\t\t\t2: Back");
+    printf("\n\n\n\t\t\t\t\t\t1: 1st Dose\t\t\t 2: 2nd Dose");
+    printf("\n\n\n\n\t\t\t\t\t\t3: Back");
     printf("\n\n\n\t\t\t\t\t\t\t\t\tChoice:- ");
     scanf("%d", &n2);
     switch (n2)
     {
     case 1:
     {
-        viewAvailable();
+        availableFirst();
         break;
     }
     case 2:
+    {
+        availableSecond();
+        break;
+    }
+    case 3:
     {
         menu();
         break;
@@ -390,11 +444,11 @@ run:
     }
 }
 
-void viewAvailable()
+void availableFirst()
 {
+    struct record rec;
     FILE *fp;
     char ch;
-    int add_no_of_vaccine = 0, rem_vaccine = 0;
     fp = fopen("record.txt", "r");
     if (fp == NULL)
     {
@@ -410,12 +464,43 @@ void viewAvailable()
             no_of_patients++;
         }
     }
-    rem_vaccine = no_of_vaccine - no_of_patients;
     system("cls");
     printf("\n\t\t\t\t\t\t\t*****************************************\n");
-    printf("\t\t\t\t\t\t\t\t   REMAINING VACCINE");
+    printf("\t\t\t\t\t\t\t\t   1st DOSE DONE");
     printf("\n\t\t\t\t\t\t\t*****************************************\n");
-    printf("\n\n\n\n\t\t\t\t\t\tNumber of people vaccinated from this hospital:- %d", no_of_patients);
-    printf("\n\n\t\t\t\t\t\tAvailable number of vaccine are:- %d \n", rem_vaccine);
+    printf("\n\n\n\n\t\t\t\t\t\tNumber of people who got first dose:- %d", no_of_patients);
     fclose(fp);
+}
+
+void availableSecond()
+{
+    FILE *fp;
+    char cht;
+    int rem_vaccine = 0, no_of_patients2 = 0;
+    fp = fopen("record.txt", "r");
+    if (fp == NULL)
+    {
+        printf("\n\t\tError opening the file");
+        exit(0);
+    }
+    cht = fgetc(fp);
+    while (!feof(fp))
+    {
+        cht = fgetc(fp);
+        if (cht == '+')
+        {
+            no_of_patients2++;
+        }
+    }
+    rem_vaccine = no_of_vaccine - no_of_patients2;
+    system("cls");
+    printf("\n\t\t\t\t\t\t\t*****************************************\n");
+    printf("\t\t\t\t\t\t\t\t   2nd DOSE DONE");
+    printf("\n\t\t\t\t\t\t\t*****************************************\n");
+    printf("\n\n\n\n\t\t\t\t\t\tNumber of people who got both vaccine:- %d", no_of_patients2);
+    printf("\n\n\t\t\t\t\t\tAvailable number of vaccine are:- %d \n\n\n\n\n\n", rem_vaccine);
+    fclose(fp);
+    printf("\t\n\n\t\t\t\t\n\n\n\n\n\n\n\n\n\n\n\n Press any key to return HOMEPAGE.............  ");
+    getch();
+    menu();
 }
