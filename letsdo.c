@@ -291,7 +291,7 @@ void holdon()
         printf("\t\n\n\t\t\t\t\n\n\n\n\n\n\n\n\n\n\n\n Press any key to continue...  ");
         getch();
         system("cls");
-        printf("\n\n\n\n\n\n\n\t\t\t\t\t\t\t\t\t%s! Your first dose is done. \n\n\t\t\t\t\t\t\t\t (PLEASE COME AFTER 30 DAYS FOR SECOND DOSE) \n\n\n\n\n\n\n\n", rec.name);
+        printf("\n\n\n\n\n\n\n\t\t\t\t\t\t\t\t\t%s! Your first dose is done. \n\n\n\n\n\n\t\t\t\t\t\t\t\t (PLEASE COME AFTER 30 DAYS FOR SECOND DOSE) \n\n\n\n\n\n\n\n", rec.name);
         printf("\t\n\n\t\t\t\t\n\n\n\n\n\n\n\n\n\n\n\n Press any key to return HOMEPAGE.............  ");
         getch();
         menu();
